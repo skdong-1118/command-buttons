@@ -44,21 +44,76 @@
         "command": "commandButtons.runButton",
         "title": "Command Buttons: Run Button",
         "icon": "$(play)"
+      },
+      {
+        "command": "commandButtons.addButton",
+        "title": "Command Buttons: Add Button",
+        "icon": "$(add)"
+      },
+      {
+        "command": "commandButtons.editButton",
+        "title": "Command Buttons: Edit Button",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "commandButtons.deleteButton",
+        "title": "Command Buttons: Delete Button",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "commandButtons.moveButtonUp",
+        "title": "Command Buttons: Move Up",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "commandButtons.moveButtonDown",
+        "title": "Command Buttons: Move Down",
+        "icon": "$(arrow-down)"
       }
     ],
     "menus": {
       "view/title": [
         {
+          "command": "commandButtons.addButton",
+          "when": "view == commandButtons.sidebar",
+          "group": "navigation@1"
+        },
+        {
           "command": "commandButtons.refresh",
           "when": "view == commandButtons.sidebar",
-          "group": "navigation"
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
         {
           "command": "commandButtons.runButton",
-          "when": "view == commandButtons.sidebar && viewItem == button",
+          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
           "group": "inline"
+        },
+        {
+          "command": "commandButtons.editButton",
+          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
+          "group": "primary@1"
+        },
+        {
+          "command": "commandButtons.deleteButton",
+          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
+          "group": "primary@2"
+        },
+        {
+          "command": "commandButtons.moveButtonUp",
+          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
+          "group": "secondary@1"
+        },
+        {
+          "command": "commandButtons.moveButtonDown",
+          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
+          "group": "secondary@2"
+        },
+        {
+          "command": "commandButtons.addButton",
+          "when": "view == commandButtons.sidebar && viewItem =~ /group/",
+          "group": "primary@1"
         }
       ]
     },

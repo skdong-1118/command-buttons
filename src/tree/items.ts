@@ -15,7 +15,7 @@ export class ButtonItem extends vscode.TreeItem {
   constructor(public readonly button: ResolvedButton) {
     super(button.label, vscode.TreeItemCollapsibleState.None);
 
-    this.contextValue = BUTTON_CONTEXT;
+    this.contextValue = `${BUTTON_CONTEXT};${button.source}`;
     this.description = button.command;
     this.tooltip = resolveTooltip(button);
 
