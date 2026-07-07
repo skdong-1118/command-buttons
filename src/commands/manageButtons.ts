@@ -49,23 +49,22 @@ export function createAddHandler(
   return async (arg?: string | GroupItem) => {
     // VSCode passes the GroupItem from group context menu, or a string,
     // or an unexpected object (e.g. TreeView) from the toolbar button.
-    let groupName: string | undefined;
+    let prefillGroup: string | undefined;
     if (arg instanceof GroupItem) {
-      groupName = arg.label!.toString();
+      prefillGroup = arg.label!.toString();
     } else if (typeof arg === 'string') {
-      groupName = arg;
+      prefillGroup = arg;
     }
 
-    // Step 1: Group (optional)
-    if (!groupName) {
-      groupName = await vscode.window.showInputBox({
-        title: 'Command Buttons — Add Button',
-        placeHolder: 'skip to leave ungrouped',
-        prompt: 'Enter a group name (optional, press Enter/ESC to skip)',
-      });
-      // undefined means ESC — user cancelled; '' means skip
-      if (groupName === undefined) { return; }
-    }
+    // Step 1: Group (optional) — always show so user can confirm or change
+    const groupName = await vscode.window.showInputBox({
+      title: 'Command Buttons — Add Button',
+      value: prefillGroup ?? '',
+      placeHolder: 'skip to leave ungrouped',
+      prompt: 'Enter a group name (optional, press Enter/ESC to skip)',
+    });
+    // undefined means ESC — user cancelled
+    if (groupName === undefined) { return; }
 
     const stepTitle = groupName?.trim()
       ? `Command Buttons — Add to "${groupName.trim()}"`
