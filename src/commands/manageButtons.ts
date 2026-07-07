@@ -8,6 +8,7 @@ import {
   workspaceFileExists,
   suggestedTarget,
 } from '../config/writer';
+import { GroupItem } from '../tree/items';
 
 // ── Common Codicons for the icon picker ──────────────────────────
 
@@ -44,8 +45,12 @@ const COMMON_ICONS = [
 
 export function createAddHandler(
   onChanged: () => void
-): (groupName?: string) => Promise<void> {
-  return async (groupName?: string) => {
+): (arg?: string | GroupItem) => Promise<void> {
+  return async (arg?: string | GroupItem) => {
+    // VSCode passes the tree item when invoked from group context menu
+    let groupName: string | undefined =
+      arg instanceof GroupItem ? arg.label!.toString() : arg;
+
     // Step 1: Group (optional)
     if (!groupName) {
       groupName = await vscode.window.showInputBox({
