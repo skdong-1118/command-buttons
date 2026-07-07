@@ -86,11 +86,6 @@
       ],
       "view/item/context": [
         {
-          "command": "commandButtons.runButton",
-          "when": "view == commandButtons.sidebar && viewItem =~ /button/",
-          "group": "inline"
-        },
-        {
           "command": "commandButtons.editButton",
           "when": "view == commandButtons.sidebar && viewItem =~ /button/",
           "group": "primary@1"
