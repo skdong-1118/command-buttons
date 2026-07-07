@@ -8,6 +8,18 @@ import {
   createMoveHandler,
 } from './commands/manageButtons';
 import { ResolvedButton } from './config/types';
+import { ButtonItem } from './tree/items';
+
+/**
+ * Context menu passes a ButtonItem TreeItem, but handlers expect ResolvedButton.
+ * Unwrap if needed.
+ */
+function unwrapButton(arg: unknown): ResolvedButton {
+  if (arg instanceof ButtonItem) {
+    return arg.button;
+  }
+  return arg as ResolvedButton;
+}
 
 export function activate(context: vscode.ExtensionContext): void {
   // ── Tree provider ──────────────────────────────────────────────
@@ -24,34 +36,39 @@ export function activate(context: vscode.ExtensionContext): void {
   const runHandler = createRunButtonHandler();
   const runCmd = vscode.commands.registerCommand(
     'commandButtons.runButton',
-    (button: ResolvedButton) => runHandler(button)
+    (button: unknown) => runHandler(unwrapButton(button))
   );
 
   const refreshCmd = vscode.commands.registerCommand('commandButtons.refresh', refresh);
 
+  const addHandler = createAddHandler(refresh);
   const addCmd = vscode.commands.registerCommand(
     'commandButtons.addButton',
-    createAddHandler(refresh)
+    addHandler
   );
 
+  const editHandler = createEditHandler(refresh);
   const editCmd = vscode.commands.registerCommand(
     'commandButtons.editButton',
-    createEditHandler(refresh)
+    (arg: unknown) => editHandler(unwrapButton(arg))
   );
 
+  const deleteHandler = createDeleteHandler(refresh);
   const deleteCmd = vscode.commands.registerCommand(
     'commandButtons.deleteButton',
-    createDeleteHandler(refresh)
+    (arg: unknown) => deleteHandler(unwrapButton(arg))
   );
 
+  const moveUpHandler = createMoveHandler(refresh, 'up');
   const moveUpCmd = vscode.commands.registerCommand(
     'commandButtons.moveButtonUp',
-    createMoveHandler(refresh, 'up')
+    (arg: unknown) => moveUpHandler(unwrapButton(arg))
   );
 
+  const moveDownHandler = createMoveHandler(refresh, 'down');
   const moveDownCmd = vscode.commands.registerCommand(
     'commandButtons.moveButtonDown',
-    createMoveHandler(refresh, 'down')
+    (arg: unknown) => moveDownHandler(unwrapButton(arg))
   );
 
   // ── Config change watcher ──────────────────────────────────────
