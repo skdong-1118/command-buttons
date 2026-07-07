@@ -15,6 +15,8 @@ export class ButtonItem extends vscode.TreeItem {
   constructor(public readonly button: ResolvedButton) {
     super(button.label, vscode.TreeItemCollapsibleState.None);
 
+    // Unique ID so VSCode can track items across tree refreshes
+    this.id = `button:${button.source}:${button.id}`;
     this.contextValue = `${BUTTON_CONTEXT};${button.source}`;
     this.tooltip = resolveTooltip(button);
 
@@ -43,6 +45,8 @@ export class GroupItem extends vscode.TreeItem {
   constructor(groupName: string, buttons: ResolvedButton[]) {
     super(groupName, vscode.TreeItemCollapsibleState.Expanded);
 
+    // Unique ID so VSCode can distinguish multiple groups
+    this.id = `group:${groupName}`;
     this.contextValue = GROUP_CONTEXT;
     this.buttons = buttons.map(b => new ButtonItem(b));
 
