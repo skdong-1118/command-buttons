@@ -47,9 +47,14 @@ export function createAddHandler(
   onChanged: () => void
 ): (arg?: string | GroupItem) => Promise<void> {
   return async (arg?: string | GroupItem) => {
-    // VSCode passes the tree item when invoked from group context menu
-    let groupName: string | undefined =
-      arg instanceof GroupItem ? arg.label!.toString() : arg;
+    // VSCode passes the GroupItem from group context menu, or a string,
+    // or an unexpected object (e.g. TreeView) from the toolbar button.
+    let groupName: string | undefined;
+    if (arg instanceof GroupItem) {
+      groupName = arg.label!.toString();
+    } else if (typeof arg === 'string') {
+      groupName = arg;
+    }
 
     // Step 1: Group (optional)
     if (!groupName) {
