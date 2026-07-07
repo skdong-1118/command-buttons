@@ -46,25 +46,40 @@ export function createAddHandler(
   onChanged: () => void
 ): (groupName?: string) => Promise<void> {
   return async (groupName?: string) => {
-    // Step 1: Label
+    // Step 1: Group (optional)
+    if (!groupName) {
+      groupName = await vscode.window.showInputBox({
+        title: 'Command Buttons — Add Button',
+        placeHolder: 'skip to leave ungrouped',
+        prompt: 'Enter a group name (optional, press Enter/ESC to skip)',
+      });
+      // undefined means ESC — user cancelled; '' means skip
+      if (groupName === undefined) { return; }
+    }
+
+    const stepTitle = groupName?.trim()
+      ? `Command Buttons — Add to "${groupName.trim()}"`
+      : 'Command Buttons — Add Button';
+
+    // Step 2: Label
     const label = await vscode.window.showInputBox({
-      title: 'Command Buttons — Add Button',
+      title: stepTitle,
       placeHolder: 'My Button',
       prompt: 'Enter the button label (display text)',
       validateInput: v => (v?.trim() ? undefined : 'Label is required'),
     });
     if (!label) { return; }
 
-    // Step 2: Command
+    // Step 3: Command
     const command = await vscode.window.showInputBox({
-      title: `Command Buttons — Add "${label}"`,
+      title: `${stepTitle} — "${label}"`,
       placeHolder: 'echo hello',
       prompt: 'Enter the command text to send to the terminal',
       validateInput: v => (v?.trim() ? undefined : 'Command is required'),
     });
     if (!command) { return; }
 
-    // Step 3: Icon (optional)
+    // Step 4: Icon (optional)
     const iconPick = await vscode.window.showQuickPick(
       [
         { label: '$(search) Search for icon...', id: '__search__' },
@@ -73,7 +88,7 @@ export function createAddHandler(
         ...COMMON_ICONS,
       ],
       {
-        title: `Command Buttons — Add "${label}"`,
+        title: `${stepTitle} — "${label}"`,
         placeHolder: 'Choose an icon (optional)',
         matchOnDescription: true,
       }
@@ -85,7 +100,7 @@ export function createAddHandler(
     // Search for custom icon
     if (iconId === '__search__') {
       const custom = await vscode.window.showInputBox({
-        title: `Command Buttons — Icon for "${label}"`,
+        title: `${stepTitle} — Icon for "${label}"`,
         placeHolder: 'rocket',
         prompt: 'Enter a Codicon ID (without $() ) — e.g. "rocket", "flame", "gear"',
       });
@@ -94,15 +109,6 @@ export function createAddHandler(
     }
 
     const icon = iconId ? `$(${iconId})` : undefined;
-
-    // Step 4: Group (optional)
-    if (!groupName) {
-      groupName = await vscode.window.showInputBox({
-        title: `Command Buttons — Group for "${label}"`,
-        placeHolder: 'skip to leave ungrouped',
-        prompt: 'Enter a group name (optional, press Enter/ESC to skip)',
-      });
-    }
 
     // Step 5: Target
     const target = await pickTarget();

@@ -16,7 +16,6 @@ export class ButtonItem extends vscode.TreeItem {
     super(button.label, vscode.TreeItemCollapsibleState.None);
 
     this.contextValue = `${BUTTON_CONTEXT};${button.source}`;
-    this.description = button.command;
     this.tooltip = resolveTooltip(button);
 
     // Parse optional Codicon, e.g. "$(gear)" → icon "gear"
