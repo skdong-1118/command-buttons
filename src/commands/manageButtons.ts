@@ -10,6 +10,12 @@ import {
 } from '../config/writer';
 import { GroupItem } from '../tree/items';
 
+/** Find a button in the list by its unique key (id, falling back to label). */
+function findButtonIndex(buttons: ButtonConfig[], button: ResolvedButton): number {
+  const key = button.id || button.label;
+  return buttons.findIndex(b => (b.id || b.label) === key);
+}
+
 // ── Common Codicons for the icon picker ──────────────────────────
 
 const COMMON_ICONS = [
@@ -122,8 +128,11 @@ export function createAddHandler(
     // Step 5: Target
     const target = await pickTarget();
 
-    // Generate id from label
-    const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    // Generate a unique id from label; fall back to timestamp if label is non-Latin
+    let id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!id) {
+      id = `btn-${Date.now()}`;
+    }
 
     // Build and save
     const button: ButtonConfig = {
@@ -209,7 +218,7 @@ export function createEditHandler(
 
     // Apply change
     const buttons = readButtons(target);
-    const idx = buttons.findIndex(b => b.id === button.id);
+    const idx = findButtonIndex(buttons, button);
     if (idx === -1) { return; }
 
     const updated = { ...buttons[idx] };
@@ -259,7 +268,7 @@ export function createMoveHandler(
   return async (button: ResolvedButton) => {
     const target: ConfigTarget = button.source === 'workspace' ? 'workspace' : 'global';
     const buttons = readButtons(target);
-    const idx = buttons.findIndex(b => b.id === button.id);
+    const idx = findButtonIndex(buttons, button);
     if (idx === -1) { return; }
 
     const newIdx = direction === 'up' ? idx - 1 : idx + 1;

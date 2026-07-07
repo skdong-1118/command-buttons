@@ -18,11 +18,13 @@ export function loadButtons(context: vscode.ExtensionContext): ResolvedButton[] 
   const merged = new Map<string, ResolvedButton>();
 
   for (const b of globalButtons) {
-    merged.set(b.id, { ...b, source: 'global' } as ResolvedButton);
+    const key = b.id || b.label;
+    merged.set(key, { ...b, source: 'global' } as ResolvedButton);
   }
 
   for (const b of workspaceButtons) {
-    merged.set(b.id, { ...b, source: 'workspace' } as ResolvedButton);
+    const key = b.id || b.label;
+    merged.set(key, { ...b, source: 'workspace' } as ResolvedButton);
   }
 
   return Array.from(merged.values());
@@ -32,7 +34,7 @@ export function loadButtons(context: vscode.ExtensionContext): ResolvedButton[] 
 function getGlobalButtons(): ButtonConfig[] {
   const config = vscode.workspace.getConfiguration('commandButtons');
   const buttons = config.get<ButtonConfig[]>('buttons', []);
-  return buttons.filter(b => b.id && b.label && b.command);
+  return buttons.filter(b => b.label && b.command);
 }
 
 /** Read buttons from workspace .vscode/command-buttons.json if it exists. */
