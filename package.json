@@ -1,0 +1,125 @@
+{
+  "name": "command-buttons",
+  "displayName": "Command Buttons",
+  "description": "Configurable buttons in the sidebar to send commands to the terminal, like SecureCRT's button bar.",
+  "version": "0.1.0",
+  "publisher": "skdong",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:commandButtons.sidebar"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "commandButtons",
+          "title": "Command Buttons",
+          "icon": "$(terminal)"
+        }
+      ]
+    },
+    "views": {
+      "commandButtons": [
+        {
+          "id": "commandButtons.sidebar",
+          "name": "Buttons",
+          "icon": "$(terminal)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "commandButtons.refresh",
+        "title": "Command Buttons: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "commandButtons.runButton",
+        "title": "Command Buttons: Run Button",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "commandButtons.refresh",
+          "when": "view == commandButtons.sidebar",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "commandButtons.runButton",
+          "when": "view == commandButtons.sidebar && viewItem == button",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Command Buttons",
+      "properties": {
+        "commandButtons.buttons": {
+          "type": "array",
+          "default": [],
+          "title": "Buttons",
+          "description": "Global button configuration. Each button sends text to the active terminal when clicked.",
+          "items": {
+            "type": "object",
+            "title": "Button",
+            "required": ["id", "label", "command"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "ID",
+                "description": "Unique identifier for this button."
+              },
+              "label": {
+                "type": "string",
+                "title": "Label",
+                "description": "Display text shown on the button."
+              },
+              "icon": {
+                "type": "string",
+                "title": "Icon",
+                "description": "Optional Codicon ID (e.g. '$(gear)'). Leave empty for no icon."
+              },
+              "command": {
+                "type": "string",
+                "title": "Command",
+                "description": "Text to send to the terminal (newline appended automatically)."
+              },
+              "group": {
+                "type": "string",
+                "title": "Group",
+                "description": "Optional group name. Buttons in the same group are shown together under a collapsible section."
+              },
+              "tooltip": {
+                "type": "string",
+                "title": "Tooltip",
+                "description": "Optional hover tooltip. Defaults to showing the command text."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "echo 'no linter configured'"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  }
+}
