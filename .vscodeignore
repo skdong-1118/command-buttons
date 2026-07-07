@@ -4,5 +4,7 @@ src/**
 node_modules/**
 .gitignore
 tsconfig.json
+.claude/**
+docs/**
 **/*.ts
 **/*.map

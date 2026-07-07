@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { ResolvedButton, resolveTooltip } from '../config/loader';
+import { ResolvedButton } from '../config/types';
+import { resolveTooltip } from '../config/loader';
 
 /**
  * Context value for button tree items. Used by package.json `when` clauses.
